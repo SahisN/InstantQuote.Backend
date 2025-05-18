@@ -1,5 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
+import session from "express-session";
+import { sessionSecret } from "./load_vars/loadEnv.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,9 +11,26 @@ const HOST = process.env.HOST || "localhost";
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Set cookie settings for auth
+app.use(
+  session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);
+
 // simple get route
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  return res.send("Hello World!");
+});
+
+app.get("/dashboard", (req, res) => {
+  if (req.session.user) {
+    return res.send("Welcome to the dashboard!");
+  }
+  return res.status(401).send("Authorization required!");
 });
 
 // set a port to listen
