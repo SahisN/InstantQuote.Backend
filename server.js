@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
 import { sessionSecret } from "./load_vars/loadEnv.js";
+import router from "./router/record.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,17 +22,8 @@ app.use(
   })
 );
 
-// simple get route
-app.get("/", (req, res) => {
-  return res.send("Hello World!");
-});
-
-app.get("/dashboard", (req, res) => {
-  if (req.session.user) {
-    return res.send("Welcome to the dashboard!");
-  }
-  return res.status(401).send("Authorization required!");
-});
+// Added router for organizing routes
+app.use("/", router);
 
 // set a port to listen
 app.listen(PORT, HOST, () => {
