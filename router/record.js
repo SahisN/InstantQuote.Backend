@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { hash, compare } from "bcrypt";
 import db from "../db/dbDriver.js";
+import calculatePremium from "../utils/calculatePremium.js";
 
 const router = Router();
 
@@ -70,12 +71,52 @@ router.post("/logout", (req, res) => {
   });
 });
 
-// api route
-router.get("/dashboard", (req, res) => {
+// api routes (Auth Required)
+
+router.post("/quote", async (req, res) => {
   if (req.session.user) {
-    return res.send("Welcome to the dashboard!");
+    const nameInsured = req.body.nameInsured;
+    const companyAddress = req.body.companyAddress;
+    const classCode = req.body.classCode;
+    const exposureAmount = req.body.exposureAmount;
+
+    if (nameInsured && companyAddress && classCode && exposureAmount) {
+      const userId = req.session.user;
+      const quote = calculatePremium(exposureAmount);
+
+      try {
+        await db.collection("quotes").insertOne({
+          userId,
+          nameInsured,
+          companyAddress,
+          classCode,
+          exposureAmount,
+          quote,
+        });
+        return res.status(200).send({ calculatePremium: quote });
+      } catch (error) {
+        return res.status(500).send();
+      }
+    }
+
+    return res.status(404).send("Missing information!");
   }
-  return res.status(401).send("Authorization required!");
+  return res.status(404).send("Unauthorized!");
+});
+
+// returns all generate quotes
+router.get("/quotes", async (req, res) => {
+  if (req.session.user) {
+    try {
+      const userId = req.session.user;
+      const quotes = await db.collection("quotes").find({ userId }).toArray();
+      return res.status(200).send(quotes);
+    } catch (error) {
+      return res.status(500).send();
+    }
+  }
+
+  return res.status(404).send("Unauthorized!");
 });
 
 export default router;
