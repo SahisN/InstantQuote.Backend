@@ -17,7 +17,7 @@ app.use(
   session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { secure: false }, // Set to true if using HTTPS
   })
 );

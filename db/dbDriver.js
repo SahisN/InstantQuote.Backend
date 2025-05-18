@@ -1,8 +1,8 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { dbAppname, dbPassword, dbUsername } from "../load_vars/loadEnv";
+import { dbAppname, dbPassword, dbUsername } from "../load_vars/loadEnv.js";
 
 // db url
-const uri = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.vqnmiq0.mongodb.net/?retryWrites=true&w=majority&appName=${dbAppname}`;
+const uri = `mongodb+srv://${dbUsername}:${dbPassword}@${dbAppname.toLowerCase()}.dwel0cd.mongodb.net/?retryWrites=true&w=majority&appName=${dbAppname}`;
 
 // creating & configuring mongo client
 const client = new MongoClient(uri, {
@@ -13,6 +13,8 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
+let conn;
 
 try {
   conn = await client.connect();
