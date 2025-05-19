@@ -22,13 +22,14 @@ router.post("/signup", async (req, res) => {
     if (!existingUser) {
       const hashedPassword = await hash(req.body.password, 10);
       await db.collection("accounts").insertOne({
+        username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
       });
 
       res.send(201).send("User created successfully!");
     } else {
-      res.status(404).send("User already exists!");
+      res.status(404).send({ message: "User already exists!" });
     }
   } catch (error) {
     res.status(500).send();
@@ -41,6 +42,8 @@ router.post("/login", async (req, res) => {
     const user = await db
       .collection("accounts")
       .findOne({ email: req.body.email });
+
+    console.log(user);
 
     if (!user) {
       return res.status(404).send("User not found!");
@@ -56,6 +59,7 @@ router.post("/login", async (req, res) => {
 
     // if user exist, check if password is correct
   } catch (error) {
+    console.error("Error during login:", error);
     res.status(500).send();
   }
 });
@@ -72,6 +76,17 @@ router.post("/logout", (req, res) => {
 });
 
 // api routes (Auth Required)
+router.get("/user", async (req, res) => {
+  if (req.session.user) {
+    return res
+      .status(200)
+      .send({ data: req.session.user, message: "Authorized" });
+  }
+
+  return res
+    .status(404)
+    .send({ message: "User is not logged in. Please login" });
+});
 
 router.post("/quote", async (req, res) => {
   if (req.session.user) {

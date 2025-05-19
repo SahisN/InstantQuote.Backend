@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import session from "express-session";
 import { sessionSecret } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +19,10 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // Set to true if using HTTPS
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    }, // Set to true if using HTTPS
   })
 );
 
