@@ -124,7 +124,22 @@ router.get("/quotes", async (req, res) => {
   if (req.session.user) {
     try {
       const userId = req.session.user;
-      const quotes = await db.collection("quotes").find({ userId }).toArray();
+      const quotes = await db
+        .collection("quotes")
+        .find(
+          { userId },
+          {
+            projection: {
+              nameInsured: 1,
+              companyAddress: 1,
+              classCode: 1,
+              exposureAmount: 1,
+              quote: 1,
+              _id: 0,
+            },
+          }
+        )
+        .toArray();
       return res.status(200).send(quotes);
     } catch (error) {
       return res.status(500).send();
