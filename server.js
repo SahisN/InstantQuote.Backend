@@ -11,7 +11,14 @@ const HOST = process.env.HOST || "localhost";
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(
+  bodyParser.json(),
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["*"],
+  })
+);
 
 // Set cookie settings for auth
 app.use(
