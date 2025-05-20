@@ -87,6 +87,8 @@ router.get("/user", async (req, res) => {
 });
 
 router.post("/quote", async (req, res) => {
+  console.log(req.body);
+
   if (req.session.user) {
     const nameInsured = req.body.nameInsured;
     const companyAddress = req.body.companyAddress;
