@@ -12,7 +12,6 @@ import pkg from "session-file-store";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "localhost";
 const FileStore = pkg(session);
 
 // Middleware to parse JSON bodies
@@ -46,6 +45,6 @@ app.use(
 app.use("/", router);
 
 // set a port to listen
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running`);
 });
