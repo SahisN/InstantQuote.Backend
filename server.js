@@ -4,6 +4,7 @@ import session from "express-session";
 import {
   sessionSecret,
   allowedConnection,
+  secondaryConnection,
   secure,
 } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
@@ -19,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   bodyParser.json(),
   cors({
-    origin: [allowedConnection, "http://localhost:5173"],
+    origin: [allowedConnection, secondaryConnection],
     credentials: true,
     methods: ["*"],
   })
