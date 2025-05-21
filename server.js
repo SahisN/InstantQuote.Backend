@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
-import { sessionSecret } from "./load_vars/loadEnv.js";
+import { sessionSecret, allowedConnection } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
 import cors from "cors";
 
@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   bodyParser.json(),
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedConnection,
     credentials: true,
     methods: ["*"],
   })
@@ -28,7 +28,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: process.env.HOST ? true : false,
     }, // Set to true if using HTTPS
   })
 );
