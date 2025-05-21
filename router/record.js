@@ -51,7 +51,10 @@ router.post("/login", async (req, res) => {
 
     if (await compare(req.body.password, user.password)) {
       // if password is correct, set session
-      req.session.user = user._id;
+      req.session.user = {
+        id: user._id,
+        username: user.username,
+      };
       return res.status(200).send("Login successful!");
     }
 
@@ -108,7 +111,13 @@ router.post("/quote", async (req, res) => {
           exposureAmount,
           quote,
         });
-        return res.status(200).send({ calculatePremium: quote });
+        return res.status(200).send({
+          nameInsured: nameInsured,
+          companyAddress: companyAddress,
+          classCode: classCode,
+          exposureAmount: exposureAmount,
+          calculatePremium: quote,
+        });
       } catch (error) {
         return res.status(500).send();
       }
