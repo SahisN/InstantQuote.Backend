@@ -43,8 +43,6 @@ router.post("/login", async (req, res) => {
       .collection("accounts")
       .findOne({ email: req.body.email });
 
-    console.log(user);
-
     if (!user) {
       return res.status(404).send("User not found!");
     }
@@ -78,6 +76,7 @@ router.post("/logout", (req, res) => {
 
 // api routes (Auth Required)
 router.get("/user", async (req, res) => {
+  console.log(req.session.user);
   if (req.session.user) {
     return res
       .status(200)
