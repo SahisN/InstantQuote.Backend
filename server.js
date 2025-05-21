@@ -21,12 +21,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: [allowedConnection, secondaryConnection],
+    origin: "*",
     credentials: true,
     methods: ["GET", "POST"],
   })
 );
-app.options("*", cors());
+
 // establish trust proxy
 app.set("trust proxy", 1);
 
