@@ -26,6 +26,7 @@ app.use(
     methods: ["GET", "POST"],
   })
 );
+app.options("*", cors());
 // establish trust proxy
 app.set("trust proxy", 1);
 
