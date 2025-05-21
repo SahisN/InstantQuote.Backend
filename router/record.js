@@ -70,6 +70,7 @@ router.post("/logout", (req, res) => {
     if (err) {
       return res.status(500).send("Error logging out");
     }
+    res.clearCookie("connect.sid");
     return res.status(200).send("Logout successful!");
   });
 });

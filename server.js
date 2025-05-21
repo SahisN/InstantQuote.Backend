@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: [allowedConnection, secondaryConnection],
     credentials: true,
-    methods: ["*"],
+    methods: ["GET", "POST"],
   })
 );
 // establish trust proxy
@@ -35,10 +35,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: secure,
-    }, // Set to true if using HTTPS
+    cookie: { secure: secure, httpOnly: true, sameSite: "none" }, // use true if using HTTPS
   })
 );
 
