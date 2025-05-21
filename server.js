@@ -28,7 +28,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.HOST ? true : false,
+      secure: true,
     }, // Set to true if using HTTPS
   })
 );
