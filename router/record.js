@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-// simple get route
+// simple get route, used for testing if endpoint is functioning correctly
 router.get("/", (req, res) => {
   return res.send("Hello World!");
 });
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (await compare(req.body.password, user.password)) {
-      // if password is correct, set session
+      // if password is correct, set session with mongo user id and username
       req.session.user = {
         id: user._id,
         username: user.username,
@@ -69,6 +69,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// removes session and logouts user
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -80,6 +81,7 @@ router.post("/logout", (req, res) => {
 });
 
 // api routes (Auth Required)
+// /user endpoint is used to check if user is logged in or logged out
 router.get("/user", async (req, res) => {
   console.log(req.session.user);
   if (req.session.user) {
@@ -94,19 +96,21 @@ router.get("/user", async (req, res) => {
 });
 
 router.post("/quote", async (req, res) => {
-  console.log(req.body);
-
+  // check if user is logged in
   if (req.session.user) {
     const nameInsured = req.body.nameInsured;
     const companyAddress = req.body.companyAddress;
     const classCode = req.body.classCode;
     const exposureAmount = formatToCurrency(req.body.exposureAmount);
 
+    // check if all the required data is valid
     if (nameInsured && companyAddress && classCode && exposureAmount) {
+      // create date stamp & format premium
       const createdAt = getFormatedDateStamp();
       const userId = req.session.user;
       const premium = calculatePremium(req.body.exposureAmount);
 
+      // add data to database
       try {
         await db.collection("quotes").insertOne({
           userId,
@@ -117,6 +121,8 @@ router.post("/quote", async (req, res) => {
           exposureAmount,
           premium,
         });
+
+        // return the exact same data stored in database to frontend as response
         return res.status(200).send({
           createdAt: createdAt,
           nameInsured: nameInsured,
@@ -139,7 +145,10 @@ router.post("/quote", async (req, res) => {
 router.get("/quotes", async (req, res) => {
   if (req.session.user) {
     try {
+      // get mongo userId from session
       const userId = req.session.user;
+
+      // using projection to get specific datas for frontend to display
       const quotes = await db
         .collection("quotes")
         .find(
