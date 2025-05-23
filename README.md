@@ -1,12 +1,13 @@
 📦 Getting Started
 
 1. Clone the Repository
-git clone 
+git clone https://github.com/SahisN/InstantQuote.Backend.git
 
 2. Install Dependencies
+cd InstantQuote.Backend
 npm install
 
-3. Set your .env file
+4. Set your .env file with following
 DB_USERNAME=
 DB_PASSWORD=
 DB_APPNAME=
