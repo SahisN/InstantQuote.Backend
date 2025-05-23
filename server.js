@@ -1,11 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
-import {
-  sessionSecret,
-  allowedConnection,
-  secondaryConnection,
-} from "./load_vars/loadEnv.js";
+import { sessionSecret } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
 import cors from "cors";
 import pkg from "session-file-store";
