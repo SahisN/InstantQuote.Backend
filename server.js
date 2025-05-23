@@ -13,6 +13,8 @@ const FileStore = pkg(session);
 // Middleware to parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// whitelisting domain to access backend
 app.use(
   cors({
     origin: [
@@ -34,7 +36,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, httpOnly: true, sameSite: "none" }, // use true if using HTTPS
+    cookie: { secure: true, httpOnly: true, sameSite: "none" }, // use true & sameSite: "none" if using HTTPS
   })
 );
 

@@ -14,8 +14,7 @@ const client = new MongoClient(uri, {
   },
 });
 
-let conn;
-
+// create and export global mongodb client
 try {
   conn = await client.connect();
   console.log("Connected to MongoDB");
