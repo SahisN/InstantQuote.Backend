@@ -20,7 +20,7 @@ app.use(
     origin: [
       "https://instant-quote-frontend.vercel.app",
       "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
-      "https://localhost:5173",
+      "http://localhost:5173",
     ],
     credentials: true,
     methods: ["GET", "POST"],
