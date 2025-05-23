@@ -1,30 +1,29 @@
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
-import {
-  sessionSecret,
-  allowedConnection,
-  secure,
-} from "./load_vars/loadEnv.js";
+import { sessionSecret } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
 import cors from "cors";
 import pkg from "session-file-store";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "localhost";
 const FileStore = pkg(session);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(
-  bodyParser.json(),
   cors({
-    origin: [allowedConnection, "http://localhost:5173"],
+    origin: [
+      "https://instant-quote-frontend.vercel.app",
+      "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
+    ],
     credentials: true,
-    methods: ["*"],
+    methods: ["GET", "POST"],
   })
 );
+
 // establish trust proxy
 app.set("trust proxy", 1);
 
@@ -35,10 +34,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: secure,
-    }, // Set to true if using HTTPS
+    cookie: { secure: true, httpOnly: true, sameSite: "none" }, // use true if using HTTPS
   })
 );
 
@@ -46,6 +42,6 @@ app.use(
 app.use("/", router);
 
 // set a port to listen
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running`);
 });
