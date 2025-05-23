@@ -4,4 +4,3 @@ export const dbAppname = process.env.DB_APPNAME;
 export const sessionSecret = process.env.SESSION_SECRET;
 export const allowedConnection = process.env.ALLOWED_CONNECTION;
 export const secondaryConnection = process.env.SECONDARY_CONNECTION;
-export const secure = process.env.SECURE ? true : false;

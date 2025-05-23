@@ -5,7 +5,6 @@ import {
   sessionSecret,
   allowedConnection,
   secondaryConnection,
-  secure,
 } from "./load_vars/loadEnv.js";
 import router from "./router/record.js";
 import cors from "cors";
@@ -21,7 +20,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["https://instant-quote-frontend.vercel.app", "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app"],
+    origin: [
+      "https://instant-quote-frontend.vercel.app",
+      "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
+    ],
     credentials: true,
     methods: ["GET", "POST"],
   })
