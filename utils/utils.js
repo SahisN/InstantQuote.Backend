@@ -21,9 +21,10 @@ export function formatToCurrency(number_str) {
 
 export function getFormatedDateStamp() {
   const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const year = now.getFullYear();
-
-  return `${month}/${day}/${year}`;
+  return now.toLocaleDateString("en-US", {
+    timeZone: "America/Los_Angeles", // Pacific Time
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 }
