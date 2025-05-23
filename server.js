@@ -20,6 +20,7 @@ app.use(
     origin: [
       "https://instant-quote-frontend.vercel.app",
       "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
+      "https://localhost:5173",
     ],
     credentials: true,
     methods: ["GET", "POST"],
@@ -36,7 +37,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, httpOnly: true, sameSite: "none" }, // use true & sameSite: "none" if using HTTPS
+    cookie: { secure: false, httpOnly: true }, // use true & sameSite: "none" if using HTTPS
   })
 );
 
