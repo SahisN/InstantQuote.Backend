@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { hash, compare } from "bcrypt";
 import db from "../db/dbDriver.js";
-import calculatePremium from "../utils/calculatePremium.js";
+import {
+  calculatePremium,
+  formatToCurrency,
+  getFormatedDateStamp,
+} from "../utils/utils.js";
 
 const router = Router();
 
@@ -96,27 +100,30 @@ router.post("/quote", async (req, res) => {
     const nameInsured = req.body.nameInsured;
     const companyAddress = req.body.companyAddress;
     const classCode = req.body.classCode;
-    const exposureAmount = req.body.exposureAmount;
+    const exposureAmount = formatToCurrency(req.body.exposureAmount);
 
     if (nameInsured && companyAddress && classCode && exposureAmount) {
+      const createdAt = getFormatedDateStamp();
       const userId = req.session.user;
-      const quote = calculatePremium(exposureAmount);
+      const premium = calculatePremium(req.body.exposureAmount);
 
       try {
         await db.collection("quotes").insertOne({
           userId,
+          createdAt,
           nameInsured,
           companyAddress,
           classCode,
           exposureAmount,
-          quote,
+          premium,
         });
         return res.status(200).send({
+          createdAt: createdAt,
           nameInsured: nameInsured,
           companyAddress: companyAddress,
           classCode: classCode,
           exposureAmount: exposureAmount,
-          calculatePremium: quote,
+          premium: premium,
         });
       } catch (error) {
         return res.status(500).send();
@@ -139,11 +146,12 @@ router.get("/quotes", async (req, res) => {
           { userId },
           {
             projection: {
+              createdAt: 1,
               nameInsured: 1,
               companyAddress: 1,
               classCode: 1,
               exposureAmount: 1,
-              quote: 1,
+              premium: 1,
               _id: 0,
             },
           }
