@@ -41,7 +41,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, httpOnly: false, sameSite: "none" }, // use true if using HTTPS
+    cookie: { secure: true, httpOnly: true, sameSite: "none" }, // use true if using HTTPS
   })
 );
 
