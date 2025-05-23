@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: [allowedConnection, secondaryConnection],
+    origin: ["https://instant-quote-frontend.vercel.app", "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app"],
     credentials: true,
     methods: ["GET", "POST"],
   })
