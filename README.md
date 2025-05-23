@@ -13,6 +13,8 @@ DB_PASSWORD=
 DB_APPNAME=
 SESSION_SECRET=
 
+4. Run node index.js
+
 *Note: you might need to change mongodb uri, since it's unique to user as well*
 
-4. Run node index.js
+
