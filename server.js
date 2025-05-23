@@ -13,7 +13,6 @@ import pkg from "session-file-store";
 const app = express();
 const PORT = process.env.PORT || 3000;
 const FileStore = pkg(session);
-console.log(allowedConnection, secondaryConnection);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true }));
