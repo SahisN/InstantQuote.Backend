@@ -149,26 +149,43 @@ router.get("/quotes", async (req, res) => {
       const userId = req.session.user;
 
       // using projection to get specific datas for frontend to display
-      const quotes = await db
-        .collection("quotes")
-        .find(
-          { userId },
-          {
-            projection: {
-              createdAt: 1,
-              nameInsured: 1,
-              companyAddress: 1,
-              classCode: 1,
-              exposureAmount: 1,
-              premium: 1,
-              _id: 0,
-            },
-          }
-        )
-        .toArray();
+      const quotes = await db.collection("quotes").find({ userId }).toArray();
       return res.status(200).send(quotes);
     } catch (error) {
       return res.status(500).send();
+    }
+  }
+
+  return res.status(404).send("Unauthorized!");
+});
+
+// returns a specific quote
+router.get("/get-quote/:id", async (req, res) => {
+  if (req.session.user) {
+    const quoteId = req.session.quoteId;
+
+    try {
+      const quote = await db.collection("quotes").findOne({ quoteId });
+      return res.status(200).send(quote);
+    } catch (error) {
+      res.status(500).send();
+    }
+  }
+
+  return res.status(404).send("Unauthorized!");
+});
+
+// updates quote information in database
+router.put("/edit-quotes/:id", async (req, res) => {
+  if (req.session.user) {
+    const quoteId = req.session.quoteId;
+    const quoteData = req.session.quoteData;
+
+    try {
+      await db.collection("quotes").updateOne({ quoteId, quoteData });
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).send();
     }
   }
 
