@@ -1,3 +1,11 @@
+# Technology used
+- ExpressJS
+- Express Session
+- Mongodb
+- Session File
+- Bcrypt
+- Cors
+
 📦 Getting Started
 
 1. Clone the Repository
