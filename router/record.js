@@ -7,6 +7,8 @@ import {
   getFormatedDateStamp,
 } from "../utils/utils.js";
 
+import { ObjectId } from "mongodb";
+
 const router = Router();
 
 // simple get route, used for testing if endpoint is functioning correctly
@@ -31,7 +33,7 @@ router.post("/signup", async (req, res) => {
         password: hashedPassword,
       });
 
-      res.send(201).send("User created successfully!");
+      res.send(201).send({ message: "User created successfully!" });
     } else {
       res.status(404).send({ message: "User already exists!" });
     }
@@ -57,10 +59,10 @@ router.post("/login", async (req, res) => {
         id: user._id,
         username: user.username,
       };
-      return res.status(200).send("Login successful!");
+      return res.status(200).send({ message: "Login successful!" });
     }
 
-    return res.status(404).send("Invalid username or password!");
+    return res.status(404).send({ message: "Invalid username or password!" });
 
     // if user exist, check if password is correct
   } catch (error) {
@@ -73,10 +75,10 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send("Error logging out");
+      return res.status(500).send({ message: "Error logging out" });
     }
     res.clearCookie("connect.sid");
-    return res.status(200).send("Logout successful!");
+    return res.status(200).send({ message: "Logout successful!" });
   });
 });
 
@@ -87,7 +89,7 @@ router.get("/user", async (req, res) => {
   if (req.session.user) {
     return res
       .status(200)
-      .send({ data: req.session.user, message: "Authorized" });
+      .send({ data: req.session.user, message: "User Authorized" });
   }
 
   return res
@@ -106,7 +108,7 @@ router.post("/quote", async (req, res) => {
     // check if all the required data is valid
     if (nameInsured && companyAddress && classCode && exposureAmount) {
       // create date stamp & format premium
-      const createdAt = getFormatedDateStamp();
+      const lastUpdated = getFormatedDateStamp();
       const userId = req.session.user;
       const premium = calculatePremium(req.body.exposureAmount);
 
@@ -114,7 +116,7 @@ router.post("/quote", async (req, res) => {
       try {
         await db.collection("quotes").insertOne({
           userId,
-          createdAt,
+          lastUpdated,
           nameInsured,
           companyAddress,
           classCode,
@@ -124,7 +126,7 @@ router.post("/quote", async (req, res) => {
 
         // return the exact same data stored in database to frontend as response
         return res.status(200).send({
-          createdAt: createdAt,
+          lastUpdated: lastUpdated,
           nameInsured: nameInsured,
           companyAddress: companyAddress,
           classCode: classCode,
@@ -136,9 +138,9 @@ router.post("/quote", async (req, res) => {
       }
     }
 
-    return res.status(404).send("Missing information!");
+    return res.status(404).send({ message: "Missing Information" });
   }
-  return res.status(404).send("Unauthorized!");
+  return res.status(404).send({ message: "User Unauthorized" });
 });
 
 // returns all generate quotes
@@ -156,40 +158,76 @@ router.get("/quotes", async (req, res) => {
     }
   }
 
-  return res.status(404).send("Unauthorized!");
+  return res.status(404).send({ message: "User Unauthorized" });
 });
 
 // returns a specific quote
 router.get("/get-quote/:id", async (req, res) => {
   if (req.session.user) {
-    const quoteId = req.session.quoteId;
+    const quoteId = req.params.id;
+    const userId = req.session.user;
 
     try {
-      const quote = await db.collection("quotes").findOne({ quoteId });
+      // using filter to get quote using quoteId that belongs to the user that userId
+      const quote = await db
+        .collection("quotes")
+        .findOne({ _id: new ObjectId(quoteId), userId });
+
       return res.status(200).send(quote);
     } catch (error) {
-      res.status(500).send();
+      return res.status(500).send();
     }
   }
 
-  return res.status(404).send("Unauthorized!");
+  return res.status(404).send({ message: "User Unauthorized" });
 });
 
 // updates quote information in database
 router.put("/edit-quotes/:id", async (req, res) => {
   if (req.session.user) {
-    const quoteId = req.session.quoteId;
-    const quoteData = req.session.quoteData;
+    const quoteId = req.params.id;
+    const userId = req.session.user;
+    const nameInsured = req.body.nameInsured;
+    const companyAddress = req.body.companyAddress;
+    const classCode = req.body.classCode;
+    const exposureAmount = req.body.exposureAmount;
 
-    try {
-      await db.collection("quotes").updateOne({ quoteId, quoteData });
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).send();
+    // check if quoteData and quoteId is valid
+    if (
+      nameInsured &&
+      companyAddress &&
+      classCode &&
+      exposureAmount &&
+      quoteId
+    ) {
+      // update time and premium
+      const lastUpdated = getFormatedDateStamp();
+      const premium = calculatePremium(exposureAmount);
+
+      try {
+        await db.collection("quotes").updateOne(
+          { _id: new ObjectId(quoteId), userId },
+          {
+            $set: {
+              lastUpdated: lastUpdated,
+              nameInsured: nameInsured,
+              companyAddress: companyAddress,
+              exposureAmount: exposureAmount,
+              premium: premium,
+            },
+          }
+        );
+        return res.status(204).send();
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send();
+      }
+    } else {
+      return res.status(404).send({ message: "missing fields" });
     }
   }
 
-  return res.status(404).send("Unauthorized!");
+  return res.status(404).send({ message: "User Unauthorized" });
 });
 
 export default router;
