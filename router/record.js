@@ -8,6 +8,7 @@ import {
 } from "../utils/utils.js";
 
 import { ObjectId } from "mongodb";
+import { ALLOWED_STATUSES } from "../constants/index.js";
 
 const router = Router();
 
@@ -122,6 +123,7 @@ router.post("/quote", async (req, res) => {
           classCode,
           exposureAmount,
           premium,
+          status: "Quote",
         });
 
         // return the exact same data stored in database to frontend as response
@@ -224,6 +226,40 @@ router.put("/edit-quotes/:id", async (req, res) => {
       }
     } else {
       return res.status(404).send({ message: "missing fields" });
+    }
+  }
+
+  return res.status(404).send({ message: "User Unauthorized" });
+});
+
+// updates the status of quote
+router.patch("/update-status/:id", async (req, res) => {
+  if (req.session.user) {
+    const quoteId = req.params.id;
+    const userId = req.body.user;
+    const status = req.body.status;
+
+    if (quoteId && ALLOWED_STATUSES.includes(status)) {
+      try {
+        await db.collection("quotes").updateOne(
+          {
+            _id: new ObjectId(quoteId),
+            userId,
+          },
+          {
+            $set: {
+              status: status,
+            },
+          }
+        );
+
+        return res.status(204).send();
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send();
+      }
+    } else {
+      return res.status(404).send({ message: "Invalid or Missing Data" });
     }
   }
 

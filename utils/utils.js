@@ -1,6 +1,6 @@
-export function calculatePremium(exposureAmount) {
-  const RATE = 0.015;
+import { RATE } from "../constants/index.js";
 
+export function calculatePremium(exposureAmount) {
   // ensures that the string is a valid number (removes $ & commas)
   const numeric_string = exposureAmount.replace(/[^0-9.-]+/g, "");
 
