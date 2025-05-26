@@ -12,17 +12,14 @@ export function calculatePremium(exposureAmount) {
 }
 
 export function formatToCurrency(number_str) {
-  // check if number is numeric
-  if (!isNaN(number_str) && !isNaN(parseFloat(number_str))) {
-    // convert to float to preverse decimals
-    const floatNumber = parseFloat(number_str);
+  // strip any non-numeric characters from the string
+  const numeric_string = number_str.replace(/[^0-9.-]+/g, "");
 
-    // return formatted currency with $
-    return `$${floatNumber.toLocaleString("en-US")}`;
-  }
+  // convert the numeric_string to float
+  const floatNumber = parseFloat(numeric_string);
 
-  // returns the same number if it can't be converted to float
-  return number_str;
+  // format the float number into currency format
+  return `$${floatNumber.toLocaleString("en-US")}`;
 }
 
 // returns current date matching pacific standard time zone
@@ -34,4 +31,30 @@ export function getFormatedDateStamp() {
     month: "2-digit",
     day: "2-digit",
   });
+}
+
+export function validateEmail(email) {
+  // Regular expression to validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Test the email against the regex
+  return emailRegex.test(email);
+}
+
+// checks if password is undefined & at least 5 characters long
+export function validatePassword(password) {
+  if (password) {
+    return password.length >= 5;
+  }
+
+  return false;
+}
+
+// checks if username is undefined & at least 1 character long
+export function validateUsername(username) {
+  if (username) {
+    return username.length >= 1;
+  }
+
+  return false;
 }
