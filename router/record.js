@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
         .findOne({ email: req.body.email.toLowerCase() });
 
       if (!user) {
-        return res.status(404).send("User not found!");
+        return res.status(404).send({ message: "User not found!" });
       }
 
       if (await compare(req.body.password, user.password)) {
