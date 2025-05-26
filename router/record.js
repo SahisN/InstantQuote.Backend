@@ -42,7 +42,7 @@ router.post("/signup", async (req, res) => {
       // check if user is exist
       const existingUser = await db
         .collection("accounts")
-        .findOne({ email: req.body.email });
+        .findOne({ email: req.body.email.toLowerCase() });
 
       // if user doesn't exist, create a new user
       if (!existingUser) {
@@ -84,7 +84,7 @@ router.post("/login", async (req, res) => {
       // check if user exist, if not, return 404
       const user = await db
         .collection("accounts")
-        .findOne({ email: req.body.email });
+        .findOne({ email: req.body.email.toLowerCase() });
 
       if (!user) {
         return res.status(404).send("User not found!");
