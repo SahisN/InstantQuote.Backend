@@ -192,7 +192,7 @@ router.put("/edit-quotes/:id", async (req, res) => {
     const nameInsured = req.body.nameInsured;
     const companyAddress = req.body.companyAddress;
     const classCode = req.body.classCode;
-    const exposureAmount = req.body.exposureAmount;
+    const exposureAmount = formatToCurrency(req.body.exposureAmount);
 
     // check if quoteData and quoteId is valid
     if (
