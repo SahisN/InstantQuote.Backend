@@ -15,17 +15,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // whitelisting domain to access backend
-app.use(
-  cors({
-    origin: [
-      "https://instant-quote-frontend.vercel.app",
-      "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
-      "http://localhost:5173",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "https://instant-quote-frontend.vercel.app",
+//       "https://instant-quote-frontend-8ry56ah69-sahis-neupanes-projects.vercel.app",
+//       "http://localhost:5173",
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "PATCH"],
+//   })
+// );
 
 // establish trust proxy
 app.set("trust proxy", 1);
