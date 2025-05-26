@@ -236,16 +236,13 @@ router.put("/edit-quotes/:id", async (req, res) => {
 router.patch("/update-status/:id", async (req, res) => {
   if (req.session.user) {
     const quoteId = req.params.id;
-    const userId = req.body.user;
+    const userId = req.session.user;
     const status = req.body.status;
 
-    if (quoteId && ALLOWED_STATUSES.includes(status)) {
+    if (quoteId && status) {
       try {
         await db.collection("quotes").updateOne(
-          {
-            _id: new ObjectId(quoteId),
-            userId,
-          },
+          { _id: new ObjectId(quoteId), userId },
           {
             $set: {
               status: status,
