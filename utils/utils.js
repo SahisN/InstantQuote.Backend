@@ -1,7 +1,13 @@
-export function calculatePremium(exposureAmount) {
-  const RATE = 0.015;
+import { RATE } from "../constants/index.js";
 
-  const premium = parseFloat(exposureAmount) * RATE;
+export function calculatePremium(exposureAmount) {
+  // ensures that the string is a valid number (removes $ & commas)
+  const numeric_string = exposureAmount.replace(/[^0-9.-]+/g, "");
+
+  // convert the numeric_string to float and multiply by RATE (constant) to get premium
+  const premium = parseFloat(numeric_string) * RATE;
+
+  // convert the float number into currency format
   return `$${premium.toLocaleString("en-US")}`;
 }
 
@@ -19,6 +25,7 @@ export function formatToCurrency(number_str) {
   return number_str;
 }
 
+// returns current date matching pacific standard time zone
 export function getFormatedDateStamp() {
   const now = new Date();
   return now.toLocaleDateString("en-US", {
